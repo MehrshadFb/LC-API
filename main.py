@@ -3,9 +3,12 @@ import json
 from collections import defaultdict
 
 import requests
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
+from flask_swagger_ui import get_swaggerui_blueprint
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, origins=["*"])
 
 
 def get_user_profile(username):
@@ -189,5 +192,19 @@ def get_user_data(username):
         return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
+# Swagger UI setup
+SWAGGER_URL = "/docs"  # URL for exposing Swagger UI
+API_URL = "/swagger.yaml"  # URL for Swagger YAML file
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL, API_URL, config={"app_name": "LeetCode Profile API"}
+)
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+
+@app.route("/swagger.yaml")
+def swagger_yaml():
+    return send_from_directory(".", "swagger.yaml")
+
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host="0.0.0.0", debug=True)
