@@ -1,0 +1,261 @@
+openapi: 3.0.3
+info:
+  title: LeetCode Profile API
+  description: |
+    A Flask-based REST API that fetches and processes comprehensive LeetCode user data including user profiles, submission statistics, and progress tracking by year.
+
+    This API provides:
+    - User profile information (name, bio, company, etc.)
+    - Problem solving statistics by difficulty
+    - Submission calendar with yearly breakdowns
+    - Social media links and professional information
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: mehr81@my.yorku.ca
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://127.0.0.1:5000
+    description: Development server
+
+paths:
+  /api/user/{username}:
+    get:
+      summary: Get comprehensive LeetCode user data
+      description: |
+        Retrieves comprehensive user data from LeetCode including profile information, 
+        problem solving statistics, and submission progress organized by year.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: LeetCode username to fetch data for
+          schema:
+            type: string
+            example: "john_doe"
+      responses:
+        "200":
+          description: Successful response with user data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserData"
+              examples:
+                successful_response:
+                  summary: Successful user data response
+                  value:
+                    username: "john_doe"
+                    github: "https://github.com/johndoe"
+                    twitter: "https://twitter.com/johndoe"
+                    linkedin: "https://linkedin.com/in/johndoe"
+                    ranking: 12345
+                    realname: "John Doe"
+                    aboutme: "Software Engineer passionate about algorithms"
+                    school: "MIT"
+                    website: ["https://johndoe.dev"]
+                    country_name: "United States"
+                    company: "Tech Corp"
+                    job_title: "Senior Software Engineer"
+                    skill: ["Python", "JavaScript", "Algorithms"]
+                    progress:
+                      current:
+                        daily:
+                          "2024-01-15": 3
+                          "2024-01-16": 5
+                        total: 180
+                      "2024":
+                        daily:
+                          "2024-01-01": 2
+                          "2024-01-02": 1
+                        total: 365
+                      "2023":
+                        daily:
+                          "2023-12-31": 4
+                        total: 200
+                    problem:
+                      easy:
+                        solved: 150
+                        total: 800
+                      medium:
+                        solved: 100
+                        total: 1600
+                      hard:
+                        solved: 25
+                        total: 700
+        "400":
+          description: Bad request - invalid username or request blocked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                invalid_user:
+                  summary: Invalid username
+                  value:
+                    error: "Could not fetch user data. Maybe invalid username or blocked request."
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                server_error:
+                  summary: Server error
+                  value:
+                    error: "An error occurred: Connection timeout"
+
+components:
+  schemas:
+    UserData:
+      type: object
+      properties:
+        username:
+          type: string
+          description: LeetCode username
+          example: "john_doe"
+        github:
+          type: string
+          nullable: true
+          description: GitHub profile URL
+          example: "https://github.com/johndoe"
+        twitter:
+          type: string
+          nullable: true
+          description: Twitter profile URL
+          example: "https://twitter.com/johndoe"
+        linkedin:
+          type: string
+          nullable: true
+          description: LinkedIn profile URL
+          example: "https://linkedin.com/in/johndoe"
+        ranking:
+          type: integer
+          nullable: true
+          description: LeetCode ranking
+          example: 12345
+        realname:
+          type: string
+          nullable: true
+          description: User's real name
+          example: "John Doe"
+        aboutme:
+          type: string
+          nullable: true
+          description: User's bio/about section
+          example: "Software Engineer passionate about algorithms"
+        school:
+          type: string
+          nullable: true
+          description: Educational institution
+          example: "MIT"
+        website:
+          type: array
+          items:
+            type: string
+          description: List of personal websites
+          example: ["https://johndoe.dev"]
+        country_name:
+          type: string
+          nullable: true
+          description: User's country
+          example: "United States"
+        company:
+          type: string
+          nullable: true
+          description: Current company
+          example: "Tech Corp"
+        job_title:
+          type: string
+          nullable: true
+          description: Current job title
+          example: "Senior Software Engineer"
+        skill:
+          type: array
+          items:
+            type: string
+          description: List of skill tags
+          example: ["Python", "JavaScript", "Algorithms"]
+        progress:
+          type: object
+          description: Submission progress organized by time periods
+          properties:
+            current:
+              $ref: "#/components/schemas/ProgressPeriod"
+            "2024":
+              $ref: "#/components/schemas/ProgressPeriod"
+            "2023":
+              $ref: "#/components/schemas/ProgressPeriod"
+          additionalProperties:
+            $ref: "#/components/schemas/ProgressPeriod"
+        problem:
+          $ref: "#/components/schemas/ProblemStatistics"
+      required:
+        - username
+        - progress
+        - problem
+
+    ProgressPeriod:
+      type: object
+      properties:
+        daily:
+          type: object
+          description: Daily submission counts
+          additionalProperties:
+            type: integer
+          example:
+            "2024-01-15": 3
+            "2024-01-16": 5
+        total:
+          type: integer
+          description: Total submissions in this period
+          example: 180
+      required:
+        - daily
+        - total
+
+    ProblemStatistics:
+      type: object
+      properties:
+        easy:
+          $ref: "#/components/schemas/DifficultyStats"
+        medium:
+          $ref: "#/components/schemas/DifficultyStats"
+        hard:
+          $ref: "#/components/schemas/DifficultyStats"
+      required:
+        - easy
+        - medium
+        - hard
+
+    DifficultyStats:
+      type: object
+      properties:
+        solved:
+          type: integer
+          description: Number of problems solved
+          example: 150
+        total:
+          type: integer
+          description: Total number of problems available
+          example: 800
+      required:
+        - solved
+        - total
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message describing what went wrong
+          example: "Could not fetch user data. Maybe invalid username or blocked request."
+      required:
+        - error
+
+tags:
+  - name: User Data
+    description: Operations related to fetching LeetCode user data
