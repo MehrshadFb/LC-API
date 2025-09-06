@@ -1,14 +1,30 @@
 import datetime
 import json
+import os
 from collections import defaultdict
 
 import requests
 from flask import Flask, jsonify, send_from_directory
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
+import redis
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
+
+# Enable CORS for all routes
 CORS(app, origins=["*"])
+
+# Connect to Redis (Upstash)
+r = redis.Redis(
+    host=os.getenv("REDIS_HOST"),
+    port=int(os.getenv("REDIS_PORT")),
+    password=os.getenv("REDIS_PASSWORD"),
+    ssl=True,
+    decode_responses=True,
+)
 
 
 def get_user_profile(username):
@@ -118,7 +134,13 @@ def process_progress_by_year(submission_calendar):
 def get_user_data(username):
     """Get comprehensive user data including profile, progress, and problem statistics."""
     try:
-        # Fetch user data from LeetCode
+        # Check Redis cache first
+        cache_key = f"leetcode_user:{username}"
+        cached_data = r.get(cache_key)
+        if cached_data:
+            return jsonify(json.loads(cached_data))
+
+        # If not in cache, fetch user data from LeetCode
         data = get_user_profile(username)
 
         # Safety checks
@@ -185,6 +207,10 @@ def get_user_data(username):
             "progress": progress,
             "problem": problems,
         }
+
+        # Store in Redis cache for 1 hour (3600 seconds)
+        # LeetCode data doesn't change frequently, so 1 hour is reasonable
+        r.setex(cache_key, 3600, json.dumps(result))
 
         return jsonify(result)
 
