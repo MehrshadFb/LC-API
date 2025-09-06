@@ -9,6 +9,8 @@ info:
     - Problem solving statistics by difficulty
     - Submission calendar with yearly breakdowns
     - Social media links and professional information
+    - Redis caching for improved performance (1-hour cache)
+    - CORS support for cross-origin requests
   version: 1.0.0
   contact:
     name: API Support
@@ -28,6 +30,11 @@ paths:
       description: |
         Retrieves comprehensive user data from LeetCode including profile information, 
         problem solving statistics, and submission progress organized by year.
+
+        **Performance Features:**
+        - Results are cached in Redis for 1 hour to improve response times
+        - Subsequent requests for the same user return cached data
+        - Cache helps comply with LeetCode's rate limiting
       parameters:
         - name: username
           in: path

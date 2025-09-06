@@ -10,6 +10,8 @@ A Flask-based REST API that fetches and processes comprehensive LeetCode user da
 - 🎯 **Current Year Analysis**: Special focus on the last 365 days of activity
 - 🔗 **Social Integration**: Access to GitHub, Twitter, and LinkedIn profiles
 - 🏆 **Ranking Information**: LeetCode ranking and skill tags
+- ⚡ **Redis Caching**: Fast response times with 1-hour cache for user data
+- 🌐 **CORS Enabled**: Cross-origin requests supported for web applications
 
 ## API Endpoint
 
@@ -95,8 +97,25 @@ curl -X GET "http://127.0.0.1:5000/api/user/john_doe"
    ```
 
 2. **Install dependencies:**
+
    ```bash
-   pip install flask requests
+   pip install -r requirements.txt
+   ```
+
+3. **Set up environment variables:**
+
+   Copy the example environment file and configure your Redis credentials:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Edit `.env` and add your Redis (Upstash) credentials:
+
+   ```bash
+   REDIS_HOST=your-redis-host.upstash.io
+   REDIS_PORT=your-redis-port
+   REDIS_PASSWORD=your-redis-password
    ```
 
 ## Usage
@@ -180,7 +199,11 @@ Common error scenarios:
 ### Dependencies
 
 - **Flask**: Web framework for creating the REST API
+- **flask-cors**: Enable CORS for cross-origin requests from web applications
+- **flask-swagger-ui**: Interactive API documentation interface
 - **requests**: HTTP library for making requests to LeetCode's GraphQL API
+- **redis**: Redis client for caching user data and improving performance
+- **python-dotenv**: Load environment variables from .env file for configuration
 - **datetime**: For date/time manipulation and progress calculations
 - **json**: For parsing LeetCode's submission calendar data
 - **collections.defaultdict**: For efficient data structure management
@@ -188,14 +211,22 @@ Common error scenarios:
 ### Data Processing
 
 1. **GraphQL Query**: The API uses LeetCode's GraphQL endpoint to fetch comprehensive user data
-2. **Calendar Processing**: Submission calendar data is processed to create yearly and current (365-day) breakdowns
-3. **Statistics Aggregation**: Problem statistics are calculated by difficulty level
-4. **Data Transformation**: Raw LeetCode data is transformed into a clean, structured format
+2. **Redis Caching**: User data is cached for 1 hour to improve performance and reduce API calls
+3. **Calendar Processing**: Submission calendar data is processed to create yearly and current (365-day) breakdowns
+4. **Statistics Aggregation**: Problem statistics are calculated by difficulty level
+5. **Data Transformation**: Raw LeetCode data is transformed into a clean, structured format
+
+### Caching Strategy
+
+- **Cache Duration**: 1 hour (3600 seconds) for user data
+- **Cache Key Format**: `leetcode_user:{username}`
+- **Cache Benefits**: Faster response times, reduced LeetCode API calls, better rate limit compliance
+- **Cache Provider**: Redis (Upstash) for reliable cloud-based caching
 
 ### Rate Limiting Considerations
 
 - The API includes a custom User-Agent header to reduce the likelihood of being blocked
-- Consider implementing caching for frequently requested users
+- Redis caching significantly reduces calls to LeetCode's API
 - Be mindful of LeetCode's rate limiting policies
 
 ## Error Handling
