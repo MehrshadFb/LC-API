@@ -130,6 +130,59 @@ def process_progress_by_year(submission_calendar):
     return progress
 
 
+@app.route("/", methods=["GET"])
+def home():
+    """Landing page with API instructions."""
+    return """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LeetCode Profile API</title>
+        <style>
+            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; background: #f5f7fa; }
+            .container { background: white; border-radius: 10px; padding: 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            h1 { color: #2c3e50; text-align: center; }
+            .endpoint { background: #2c3e50; color: white; padding: 15px; border-radius: 5px; font-family: monospace; margin: 15px 0; }
+            .btn { display: inline-block; background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 10px; }
+            .feature { background: #e8f5e8; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🚀 LeetCode Profile API</h1>
+            <p style="text-align: center; color: #7f8c8d;">Get comprehensive LeetCode user data with ease</p>
+            
+            <div style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 12px; border-radius: 5px; text-align: center; margin: 20px 0;">
+                <strong>✅ Service Status:</strong> Online and Ready
+            </div>
+
+            <h2>📡 Main API Endpoint</h2>
+            <p><strong>GET</strong> /api/user/{username}</p>
+            <div class="endpoint">
+curl https://leetcode-api-140473619582.us-central1.run.app/api/user/leetcode
+            </div>
+            
+            <h3>📱 Try in browser:</h3>
+            <div class="endpoint">
+https://leetcode-api-140473619582.us-central1.run.app/api/user/leetcode
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/docs/" class="btn">📖 Interactive Documentation</a>
+                <a href="/api/user/leetcode" class="btn">🧪 Try Sample Request</a>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px; color: #7f8c8d;">
+                <p>Built with ❤️ for the coding community</p>
+                <small>Deployed on Google Cloud Run | Cached with Redis</small>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
 @app.route("/api/user/<username>", methods=["GET"])
 def get_user_data(username):
     """Get comprehensive user data including profile, progress, and problem statistics."""
@@ -233,4 +286,5 @@ def swagger_yaml():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)

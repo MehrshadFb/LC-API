@@ -42,3 +42,8 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Monitoring Scripts (Private)
+monitor-service.sh
+quick-status.sh
+deploy.sh
