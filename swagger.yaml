@@ -20,6 +20,8 @@ info:
     url: https://opensource.org/licenses/MIT
 
 servers:
+  - url: https://leetcode-api-140473619582.us-central1.run.app
+    description: Production server (Google Cloud Run)
   - url: http://127.0.0.1:5000
     description: Development server
 
