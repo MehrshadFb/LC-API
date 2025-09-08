@@ -1,6 +1,17 @@
 # LeetCode Profile API
 
+🚀 **Live API:** https://leetcode-api-140473619582.us-central1.run.app  
+📖 **Documentation:** https://leetcode-api-140473619582.us-central1.run.app/docs/
+
 A Flask-based REST API that fetches and processes comprehensive LeetCode user data including user profiles, submission statistics, and progress tracking by year.
+
+## Quick Start
+
+Try the API right now:
+
+```bash
+curl https://leetcode-api-140473619582.us-central1.run.app/api/user/{username}
+```
 
 ## Features
 
@@ -28,7 +39,7 @@ A Flask-based REST API that fetches and processes comprehensive LeetCode user da
 **Example Request:**
 
 ```bash
-curl -X GET "http://127.0.0.1:5000/api/user/john_doe"
+curl -X GET "https://leetcode-api-140473619582.us-central1.run.app/api/user/john_doe"
 ```
 
 **Example Response:**
@@ -127,12 +138,12 @@ curl -X GET "http://127.0.0.1:5000/api/user/john_doe"
    ```
 
 2. **Access the API:**
-   The server will start on `http://127.0.0.1:5000` by default.
+   The API is deployed and available at `https://leetcode-api-140473619582.us-central1.run.app`.
 
 3. **Make requests:**
    ```bash
    # Get user data for a specific LeetCode username
-   curl http://127.0.0.1:5000/api/user/your_leetcode_username
+   curl https://leetcode-api-140473619582.us-central1.run.app/api/user/your_leetcode_username
    ```
 
 ## Response Format
