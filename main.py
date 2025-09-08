@@ -172,6 +172,7 @@ https://leetcode-api-140473619582.us-central1.run.app/api/user/leetcode
             <div style="text-align: center; margin-top: 30px;">
                 <a href="/docs/" class="btn">📖 Interactive Documentation</a>
                 <a href="/api/user/leetcode" class="btn">🧪 Try Sample Request</a>
+                <a href="https://github.com/MehrshadFb/LC-API" class="btn">💻 View Source Code</a>
             </div>
 
             <div style="text-align: center; margin-top: 40px; color: #7f8c8d;">
